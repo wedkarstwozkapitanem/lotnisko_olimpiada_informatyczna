@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <vector>
 #include <algorithm>
 
@@ -12,27 +12,15 @@ struct dlugosc_lotniska {
     bool pion{ false };
 };
 
-
 bool czy_poloczone(int x_1, int y_1, int x_2, int y_2, int dlugosc, bool polozenie_1, bool polozenie_2) {
-
     if (((x_1 * x_2) - (y_2 * y_2)) == 0) return true;
-
-    
     if ((std::min(x_1, x_2) >= std::max(x_1, x_2) && std::min(y_1, y_2) >= std::max(y_1, y_2))) return true;
-
-
-    /*if (x_1 + dlugosc <= x_2 + dlugosc) {
-         return true;
-     }*/
-
     return false;
 }
 
 int najdluzsze(const std::vector<dlugosc_lotniska>& dlugosci_lotnisk) {
     for (int i = 0; i < dlugosci_lotnisk.size() - 1; i++) {
         if (dlugosci_lotnisk[i].dlugosc >= dlugosci_lotnisk[i + 1].dlugosc) {
-
-
             if (!czy_poloczone(dlugosci_lotnisk[i].pozycjax, dlugosci_lotnisk[i].pozycjay, dlugosci_lotnisk[i + 1].pozycjax, dlugosci_lotnisk[i + 1].pozycjay, dlugosci_lotnisk[i].dlugosc, dlugosci_lotnisk[i].pion, dlugosci_lotnisk[i + 1].pion))
             {
                 if (i != 0) {
@@ -41,20 +29,17 @@ int najdluzsze(const std::vector<dlugosc_lotniska>& dlugosci_lotnisk) {
                         return (dlugosci_lotnisk[i - 1].dlugosc / 2);
                     }
                 }
-
                 return dlugosci_lotnisk[i+1].dlugosc;
-
             }
-
-
-
         }
-
     }
     return 0;
 }
 
 int main() {
+    std::ios_base::sync_with_stdio(0);
+    std::cin.tie(0);
+
     int szerokosc{ 0 }, liczba_pasow{ 0 };
     cin >> szerokosc >> liczba_pasow;
 
