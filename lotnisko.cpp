@@ -1,3 +1,4 @@
+//Dominik Kapitan Łempicki
 #include <iostream>
 #include <vector>
 #include <algorithm>
