@@ -1,4 +1,5 @@
-//Dominik Kapitan Łempicki
+//Dominik Łempicki Kapitan
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -14,8 +15,7 @@ struct dlugosc_lotniska {
 };
 
 bool czy_poloczone(int x_1, int y_1, int x_2, int y_2, int dlugosc, bool polozenie_1, bool polozenie_2) {
-    if (((x_1 * x_2) - (y_2 * y_2)) == 0) return true;
-    if ((std::min(x_1, x_2) >= std::max(x_1, x_2) && std::min(y_1, y_2) >= std::max(y_1, y_2))) return true;
+    if ((std::min(x_1, x_2) >= std::max(x_1, x_2) && std::min(y_1, y_2) >= std::max(y_1, y_2)) || (((x_1 * x_2) - (y_2 * y_2)) == 0)) return true;
     return false;
 }
 
@@ -38,78 +38,54 @@ int najdluzsze(const std::vector<dlugosc_lotniska>& dlugosci_lotnisk) {
 }
 
 int main() {
-    std::ios_base::sync_with_stdio(0);
-    std::cin.tie(0);
+        std::ios_base::sync_with_stdio(0);
+        std::cin.tie(0);
 
-    int szerokosc{ 0 }, liczba_pasow{ 0 };
-    cin >> szerokosc >> liczba_pasow;
+        int szerokosc{ 0 }, liczba_pasow{ 0 };
+        cin >> szerokosc >> liczba_pasow;
 
-    std::vector<std::vector<bool>> plan_lotniska(szerokosc, std::vector<bool>(szerokosc));
+        std::vector<std::vector<bool>> plan_lotniska(szerokosc, std::vector<bool>(szerokosc));
 
-    for (int i = 0; i < szerokosc; i++) {
-        for (int j = 0; j < szerokosc; j++) {
-            char tmp;
-            cin >> tmp;
-
-            if (tmp == 'X')
-                plan_lotniska[i][j] = 1;
-            else
-                plan_lotniska[i][j] = 0;
-        }
-    }
-
-    std::vector<dlugosc_lotniska> dlugosci_lotnisk;
-
-    for (int i = 0; i < szerokosc; i++) {
-        int ile_dlugie{ 0 };
-        for (int j = 0; j < szerokosc; j++) {
-            if (plan_lotniska[i][j] == false) {
-                ile_dlugie++;
+        for (int i = 0; i < szerokosc; i++) {
+            for (int j = 0; j < szerokosc; j++) {
+                char tmp;
+                cin >> tmp;
+                if (tmp == 'X') plan_lotniska[i][j] = 1;
+                else plan_lotniska[i][j] = 0;
             }
-            if ((plan_lotniska[i][j] == true || j == szerokosc - 1) && ile_dlugie != 0) {
-                if (j == szerokosc - 1) {
-                    dlugosci_lotnisk.push_back({ ile_dlugie, i, j - ile_dlugie + 1, false });
+        }
+
+        std::vector<dlugosc_lotniska> dlugosci_lotnisk;
+
+        for (int i = 0; i < szerokosc; i++) {
+            int ile_dlugie{ 0 };
+            for (int j = 0; j < szerokosc; j++) {
+                if (plan_lotniska[i][j] == false) ile_dlugie++;
+                if ((plan_lotniska[i][j] == true || j == szerokosc - 1) && ile_dlugie != 0) {
+                    if (j == szerokosc - 1) dlugosci_lotnisk.push_back({ ile_dlugie, i, j - ile_dlugie + 1, false });
+                    else dlugosci_lotnisk.push_back({ ile_dlugie, i, j - ile_dlugie, false });
+                    ile_dlugie = 0;
                 }
-                else
-                    dlugosci_lotnisk.push_back({ ile_dlugie, i, j - ile_dlugie, false });
-                ile_dlugie = 0;
             }
         }
-    }
 
-    for (int i = 0; i < szerokosc; i++) {
-        int ile_dlugie{ 0 };
-        for (int j = 0; j < szerokosc; j++) {
-            if (plan_lotniska[j][i] == false) {
-                ile_dlugie++;
-            }
-            if ((plan_lotniska[j][i] == true || j == szerokosc - 1) && ile_dlugie != 0) {
-                if (j == szerokosc - 1) {
-                    dlugosci_lotnisk.push_back({ ile_dlugie, j - ile_dlugie + 1, i, true });
+        for (int i = 0; i < szerokosc; i++) {
+            int ile_dlugie{ 0 };
+            for (int j = 0; j < szerokosc; j++) {
+                if (plan_lotniska[j][i] == false) ile_dlugie++;
+                if ((plan_lotniska[j][i] == true || j == szerokosc - 1) && ile_dlugie != 0) {
+                    if (j == szerokosc - 1) dlugosci_lotnisk.push_back({ ile_dlugie, j - ile_dlugie + 1, i, true });
+                    else dlugosci_lotnisk.push_back({ ile_dlugie, j - ile_dlugie, i, true });
+                    ile_dlugie = 0;
                 }
-                else
-                    dlugosci_lotnisk.push_back({ ile_dlugie, j - ile_dlugie, i, true });
-                ile_dlugie = 0;
             }
         }
-    }
 
-    std::sort(dlugosci_lotnisk.begin(), dlugosci_lotnisk.end(), [](const dlugosc_lotniska& a, const dlugosc_lotniska& b) {
-        return a.dlugosc > b.dlugosc;
-        });
+        std::sort(dlugosci_lotnisk.begin(), dlugosci_lotnisk.end(), [](const dlugosc_lotniska& a, const dlugosc_lotniska& b) {return a.dlugosc > b.dlugosc;});
 
-
-    //for (auto& i : dlugosci_lotnisk) cout << i.pozycjax << ":" << i.pozycjay << " " << i.dlugosc << '\n';
-
-    if (liczba_pasow == 1) {
-        cout << dlugosci_lotnisk[0].dlugosc;
-    }
-    else if (liczba_pasow == 2) {
-        cout << najdluzsze(dlugosci_lotnisk);
-    }
-    else {
-        cout << 0;
-    }
+        if (liczba_pasow == 1) cout << dlugosci_lotnisk[0].dlugosc;
+        else if (liczba_pasow == 2) cout << najdluzsze(dlugosci_lotnisk);
+        else cout << 0;
 
     return 0;
 }
